@@ -35,6 +35,15 @@ public partial class @CursorControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Position"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""b10981ae-7e84-41dd-b275-b0780c9dc447"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -48,6 +57,45 @@ public partial class @CursorControls : IInputActionCollection2, IDisposable
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""db6108c5-91b8-4d28-a59a-3292478d4adc"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Position"",
+            ""id"": ""8d928013-e94c-4808-ba75-d8456be18ec1"",
+            ""actions"": [
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Button"",
+                    ""id"": ""090ce38c-a973-4219-9239-a161757a0b8f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""d1eeabc8-d72a-40c8-80c1-5beffca41c10"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -57,6 +105,10 @@ public partial class @CursorControls : IInputActionCollection2, IDisposable
         // Mouse
         m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
         m_Mouse_Click = m_Mouse.FindAction("Click", throwIfNotFound: true);
+        m_Mouse_Position = m_Mouse.FindAction("Position", throwIfNotFound: true);
+        // Position
+        m_Position = asset.FindActionMap("Position", throwIfNotFound: true);
+        m_Position_Newaction = m_Position.FindAction("New action", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -117,11 +169,13 @@ public partial class @CursorControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Mouse;
     private IMouseActions m_MouseActionsCallbackInterface;
     private readonly InputAction m_Mouse_Click;
+    private readonly InputAction m_Mouse_Position;
     public struct MouseActions
     {
         private @CursorControls m_Wrapper;
         public MouseActions(@CursorControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Click => m_Wrapper.m_Mouse_Click;
+        public InputAction @Position => m_Wrapper.m_Mouse_Position;
         public InputActionMap Get() { return m_Wrapper.m_Mouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -134,6 +188,9 @@ public partial class @CursorControls : IInputActionCollection2, IDisposable
                 @Click.started -= m_Wrapper.m_MouseActionsCallbackInterface.OnClick;
                 @Click.performed -= m_Wrapper.m_MouseActionsCallbackInterface.OnClick;
                 @Click.canceled -= m_Wrapper.m_MouseActionsCallbackInterface.OnClick;
+                @Position.started -= m_Wrapper.m_MouseActionsCallbackInterface.OnPosition;
+                @Position.performed -= m_Wrapper.m_MouseActionsCallbackInterface.OnPosition;
+                @Position.canceled -= m_Wrapper.m_MouseActionsCallbackInterface.OnPosition;
             }
             m_Wrapper.m_MouseActionsCallbackInterface = instance;
             if (instance != null)
@@ -141,12 +198,53 @@ public partial class @CursorControls : IInputActionCollection2, IDisposable
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
+                @Position.started += instance.OnPosition;
+                @Position.performed += instance.OnPosition;
+                @Position.canceled += instance.OnPosition;
             }
         }
     }
     public MouseActions @Mouse => new MouseActions(this);
+
+    // Position
+    private readonly InputActionMap m_Position;
+    private IPositionActions m_PositionActionsCallbackInterface;
+    private readonly InputAction m_Position_Newaction;
+    public struct PositionActions
+    {
+        private @CursorControls m_Wrapper;
+        public PositionActions(@CursorControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Newaction => m_Wrapper.m_Position_Newaction;
+        public InputActionMap Get() { return m_Wrapper.m_Position; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PositionActions set) { return set.Get(); }
+        public void SetCallbacks(IPositionActions instance)
+        {
+            if (m_Wrapper.m_PositionActionsCallbackInterface != null)
+            {
+                @Newaction.started -= m_Wrapper.m_PositionActionsCallbackInterface.OnNewaction;
+                @Newaction.performed -= m_Wrapper.m_PositionActionsCallbackInterface.OnNewaction;
+                @Newaction.canceled -= m_Wrapper.m_PositionActionsCallbackInterface.OnNewaction;
+            }
+            m_Wrapper.m_PositionActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Newaction.started += instance.OnNewaction;
+                @Newaction.performed += instance.OnNewaction;
+                @Newaction.canceled += instance.OnNewaction;
+            }
+        }
+    }
+    public PositionActions @Position => new PositionActions(this);
     public interface IMouseActions
     {
         void OnClick(InputAction.CallbackContext context);
+        void OnPosition(InputAction.CallbackContext context);
+    }
+    public interface IPositionActions
+    {
+        void OnNewaction(InputAction.CallbackContext context);
     }
 }

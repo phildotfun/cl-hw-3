@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class TargetDotBehavior : MonoBehaviour
 {
+    CursorController onClick;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        NewDotPosition();
     }
 
     // Update is called once per frame
@@ -18,13 +20,9 @@ public class TargetDotBehavior : MonoBehaviour
 
     void NewDotPosition()
     {
-        float xRandom = Random.Range(-9, 9);
-        float yRandom = Random.Range(-5, 5);
+        float xRandom = Random.Range(-8, 8);
+        float yRandom = Random.Range(-4, 4);
         transform.position = new Vector3(xRandom, yRandom, 0);
     }
-
-    void OnMouseDown()
-    {
-        NewDotPosition();
-    }
 }
+
